@@ -59,59 +59,41 @@ const Results = () => {
       return;
     }
 
-    // Nettoyer le numéro de téléphone (enlever les espaces et caractères spéciaux)
-    let cleanPhone = phoneNumber.replace(/[\s\-()]/g, '');
-    
-    // Format WhatsApp pour le Bénin : +229XXXXXXXX (8 chiffres après +229)
-    let formattedPhone = '';
-    
-    // Enlever tous les caractères non numériques sauf le +
-    cleanPhone = cleanPhone.replace(/[^\d+]/g, '');
-    
-    // Traitement selon le format d'entrée
-    if (cleanPhone.startsWith('+2290')) {
-      // Format: +2290XXXXXXXX
-      formattedPhone = '+229' + cleanPhone.substring(5);
-    } else if (cleanPhone.startsWith('+229')) {
-      // Format: +229XXXXXXXX
-      formattedPhone = cleanPhone;
-    } else if (cleanPhone.startsWith('2290')) {
-      // Format: 2290XXXXXXXX
-      formattedPhone = '+229' + cleanPhone.substring(4);
-    } else if (cleanPhone.startsWith('229')) {
-      // Format: 229XXXXXXXX
-      formattedPhone = '+' + cleanPhone;
-    } else if (cleanPhone.startsWith('0')) {
-      // Format: 0XXXXXXXX
-      formattedPhone = '+229' + cleanPhone.substring(1);
-    } else {
-      // Format: XXXXXXXXX
-      formattedPhone = '+229' + cleanPhone;
+    // Supprimer tout caractère non numérique
+    let digits = phoneNumber.replace(/\D/g, '');
+
+    // Supprimer l'indicatif international "00"
+    if (digits.startsWith('00')) {
+      digits = digits.substring(2);
     }
-    
-    // Normaliser : garder seulement le + et les chiffres, max 12 chiffres après le +
-    const digits = formattedPhone.replace(/[^\d]/g, '');
-    formattedPhone = '+' + digits;
-    
-    // Validation : le numéro doit avoir exactement 12 chiffres (+229XXXXXXXX)
-    if (formattedPhone.length !== 13 || !formattedPhone.startsWith('+229')) {
+
+    // Retirer l'indicatif pays si déjà présent
+    if (digits.startsWith('229')) {
+      digits = digits.substring(3);
+    }
+
+    // Retirer un zéro préfixe éventuel sur le numéro local
+    if (digits.startsWith('0')) {
+      digits = digits.substring(1);
+    }
+
+    // Les numéros béninois ont 8 chiffres
+    if (digits.length !== 8) {
       toast({
         title: "Numéro invalide",
-        description: `Le numéro ${phoneNumber} n'est pas au bon format pour le Bénin`,
+        description: `Le numéro ${phoneNumber} doit contenir 8 chiffres après l'indicatif du Bénin (229).`,
         variant: "destructive",
       });
       return;
     }
 
-    // Message par défaut
-    const message = `Bonjour, je souhaite me renseigner sur la disponibilité et le prix du médicament "${medicationName}" dans votre pharmacie "${pharmacyName}". Merci.`;
-    
-    // URL WhatsApp
-    const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
-    
-    // Ouvrir WhatsApp dans un nouvel onglet
+    const internationalDigits = `229${digits}`;
+
+    const message = `Bonjour ${pharmacyName},\n\nJe vous contacte via la plateforme Medoc au sujet du médicament « ${medicationName} ». Pourriez-vous me confirmer sa disponibilité et son prix ?\n\nMerci d'avance pour votre retour.\nCordialement,`;
+    const whatsappUrl = `https://wa.me/${internationalDigits}?text=${encodeURIComponent(message)}`;
+
     window.open(whatsappUrl, '_blank');
-    
+
     toast({
       title: "WhatsApp ouvert",
       description: `Conversation avec ${pharmacyName} lancée`,
