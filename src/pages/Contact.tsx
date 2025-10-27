@@ -8,6 +8,7 @@ import { Mail, Phone, MapPin } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { logError } from "@/utils/logger";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -63,7 +64,7 @@ const Contact = () => {
       // Réinitialiser le formulaire
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {
-      console.error('Erreur lors de l\'envoi du message:', error);
+      logError("Erreur lors de l'envoi du message:", error);
       toast({
         title: "Erreur",
         description: "Une erreur est survenue lors de l'envoi du message. Veuillez réessayer.",

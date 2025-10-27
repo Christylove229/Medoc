@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Pill, Menu } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 const Header = () => {
@@ -8,6 +8,21 @@ const Header = () => {
   const location = useLocation();
   
   const isOnMissionPage = location.pathname === '/mission';
+  
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
   
   const scrollToSection = (sectionId: string) => {
     if (location.pathname !== '/') {
@@ -77,8 +92,8 @@ const Header = () => {
 
         {/* Menu Mobile */}
         {isMenuOpen && (
-          <div className="lg:hidden mt-4 py-4 border-t border-border">
-            <nav className="flex flex-col space-y-3 sm:space-y-4">
+          <div className="lg:hidden mt-4 py-4 border-t border-border bg-white rounded-lg shadow-soft">
+            <nav className="flex flex-col space-y-3 sm:space-y-4 text-left">
               <a href="/" className="text-base sm:text-lg text-foreground hover:text-primary transition-colors">
                 Accueil
               </a>

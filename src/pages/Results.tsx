@@ -205,19 +205,19 @@ const Results = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="py-8">
-        <div className="container mx-auto px-6">
+      <main className="pt-24 pb-14 sm:pt-28 sm:pb-16">
+        <div className="container mx-auto px-4 sm:px-6">
           {/* Header de recherche */}
-          <div className="mb-8">
-            <div className="flex items-center gap-4 mb-6">
+          <div className="mb-6 sm:mb-8">
+            <div className="flex items-start sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
               <Link to="/">
-                <Button variant="outline" size="sm">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Retour
+                <Button variant="outline" size="icon" className="h-9 w-9 sm:h-10 sm:w-auto sm:px-4">
+                  <ArrowLeft className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Retour</span>
                 </Button>
               </Link>
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">
                   {isNearbySearch ? "Pharmacies proches" : searchTerm ? `Résultats pour "${searchTerm}"` : "Rechercher un médicament"}
                 </h1>
                 {isNearbySearch && locationSource && (
@@ -233,7 +233,7 @@ const Results = () => {
             </div>
 
             {!isNearbySearch && (
-              <div className="flex flex-col md:flex-row gap-4 mb-6">
+              <div className="flex flex-col md:flex-row gap-3 sm:gap-4 mb-6">
                 <div className="flex-1">
                   <SearchInput
                     placeholder="Rechercher un autre médicament..."
@@ -242,10 +242,10 @@ const Results = () => {
                     onSearch={handleNewSearch}
                   />
                 </div>
-                <div className="flex items-center gap-2">
-                  <Filter className="h-4 w-4 text-muted-foreground" />
+                <div className="flex items-center gap-2 justify-between md:justify-start">
+                  <Filter className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                   <Select value={sortBy} onValueChange={(value: "prix" | "pharmacie" | "nom_medicament" | "disponibilite") => setSortBy(value)}>
-                    <SelectTrigger className="w-56">
+                    <SelectTrigger className="w-full md:w-56">
                       <SelectValue placeholder="Trier par..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -260,10 +260,10 @@ const Results = () => {
             )}
 
             {isNearbySearch && (
-              <div className="flex items-center gap-2 mb-6">
-                <Filter className="h-4 w-4 text-muted-foreground" />
+              <div className="flex items-center gap-2 justify-between md:justify-start mb-6">
+                <Filter className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                 <Select value={sortBy} onValueChange={(value: "distance" | "pharmacie") => setSortBy(value)}>
-                  <SelectTrigger className="w-56">
+                  <SelectTrigger className="w-full md:w-56">
                     <SelectValue placeholder="Trier par..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -295,7 +295,7 @@ const Results = () => {
                     <CardHeader>
                       <div className="flex justify-between items-start">
                         <div>
-                          <CardTitle className="text-xl text-foreground">
+                          <CardTitle className="text-xl text-foreground break-words">
                             {pharmacy.pharmacie_nom}
                           </CardTitle>
                           <p className="text-muted-foreground flex items-center mt-1">
@@ -361,7 +361,7 @@ const Results = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="flex justify-between items-center mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
                 <p className="text-muted-foreground">
                   {results.length} résultat{results.length > 1 ? 's' : ''} trouvé{results.length > 1 ? 's' : ''} pour <span className="font-medium text-primary">"{searchTerm}"</span>
                 </p>
@@ -377,7 +377,7 @@ const Results = () => {
               </div>
 
               {sortedResults.map((result, index) => (
-                <Card key={`${result.pharmacie_id}-${index}`} className="hover:shadow-lg transition-all duration-200 border-l-4 border-l-primary/20">
+                <Card key={`${result.pharmacie_id}-${index}`} className="hover:shadow-lg transition-all duration-200 border border-border/60 sm:border-l-4 sm:border-t sm:border-r sm:border-b sm:border-l-primary/20">
                   <CardHeader>
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
@@ -389,7 +389,7 @@ const Results = () => {
                             {result.disponible ? "✅ Disponible" : "❌ Indisponible"}
                           </Badge>
                         </div>
-                        <CardTitle className="text-xl text-foreground mb-1">
+                        <CardTitle className="text-xl text-foreground mb-1 break-words">
                           {result.pharmacie_nom}
                         </CardTitle>
                         <p className="text-muted-foreground flex items-center">
