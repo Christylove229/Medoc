@@ -3,6 +3,7 @@ import { Search, MapPin, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { getLocationWithFallback } from "@/utils/geolocation";
+import { logError } from "@/utils/logger";
 import { useToast } from "@/hooks/use-toast";
 
 
@@ -59,7 +60,7 @@ const SmartSearch: React.FC<SmartSearchProps> = ({ onSearchStateChange, onSearch
   };
 
   // Obtenir la localisation utilisateur
-  const getUserLocation = async () => {
+  const loadUserLocation = async () => {
     if (userLocation) return userLocation;
     
     setLocationLoading(true);
@@ -103,7 +104,7 @@ const SmartSearch: React.FC<SmartSearchProps> = ({ onSearchStateChange, onSearch
       let medicationsWithDistance = data || [];
 
       // Ajouter les distances si la localisation est disponible
-      const location = await getUserLocation();
+      const location = await loadUserLocation();
       if (location) {
         medicationsWithDistance = medicationsWithDistance.map((med: MedicationResult) => ({
           ...med,
@@ -124,7 +125,7 @@ const SmartSearch: React.FC<SmartSearchProps> = ({ onSearchStateChange, onSearch
       setResults(medicationsWithDistance.slice(0, 8)); // Limiter à 8 résultats
       setShowDropdown(true);
     } catch (error) {
-      console.error('Erreur de recherche:', error);
+      logError('Erreur de recherche:', error);
       toast({
         title: "Erreur de recherche",
         description: "Impossible de rechercher les médicaments. Veuillez réessayer.",
@@ -155,7 +156,7 @@ const SmartSearch: React.FC<SmartSearchProps> = ({ onSearchStateChange, onSearch
 
   // Détecter automatiquement la localisation au chargement du composant
   useEffect(() => {
-    getUserLocation();
+    loadUserLocation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

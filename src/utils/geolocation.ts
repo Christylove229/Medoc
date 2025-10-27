@@ -5,6 +5,8 @@ export interface GeolocationResult {
   source: 'browser' | 'ip' | 'fallback';
 }
 
+import { logInfo, logWarn } from "@/utils/logger";
+
 export interface GeolocationError {
   code: string;
   message: string;
@@ -129,7 +131,7 @@ const getIPLocation = async (): Promise<GeolocationResult> => {
         };
       }
     } catch (error) {
-      console.warn(`Erreur API ${api.url}:`, error);
+      logWarn(`Erreur API ${api.url}:`, error);
       continue;
     }
   }
@@ -157,26 +159,26 @@ const getFallbackLocation = (): GeolocationResult => {
 export const getLocationWithFallback = async (): Promise<GeolocationResult> => {
   try {
     // Tentative 1: Géolocalisation du navigateur (la plus précise)
-    console.log('🌍 Tentative de géolocalisation navigateur...');
+    logInfo('🌍 Tentative de géolocalisation navigateur...');
     const browserResult = await getBrowserLocation();
-    console.log('✅ Position navigateur obtenue:', browserResult);
+    logInfo('✅ Position navigateur obtenue:', browserResult);
     return browserResult;
   } catch (browserError) {
-    console.warn('⚠️ Échec géolocalisation navigateur:', browserError);
+    logWarn('⚠️ Échec géolocalisation navigateur:', browserError);
     
     try {
       // Tentative 2: API IP (moins précise mais acceptable)
-      console.log('🌐 Tentative de géolocalisation IP...');
+      logInfo('🌐 Tentative de géolocalisation IP...');
       const ipResult = await getIPLocation();
-      console.log('✅ Position IP obtenue:', ipResult);
+      logInfo('✅ Position IP obtenue:', ipResult);
       return ipResult;
     } catch (ipError) {
-      console.warn('⚠️ Échec géolocalisation IP:', ipError);
+      logWarn('⚠️ Échec géolocalisation IP:', ipError);
       
       // Fallback: Position par défaut (Cotonou, Bénin)
-      console.log('📍 Utilisation de la position fallback (Cotonou, Bénin)');
+      logInfo('📍 Utilisation de la position fallback (Cotonou, Bénin)');
       const fallbackResult = getFallbackLocation();
-      console.log('✅ Position fallback utilisée:', fallbackResult);
+      logInfo('✅ Position fallback utilisée:', fallbackResult);
       return fallbackResult;
     }
   }

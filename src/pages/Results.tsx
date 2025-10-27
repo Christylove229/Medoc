@@ -10,6 +10,7 @@ import { SearchInput } from "@/components/ui/search-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MapPin, Phone, Clock, ArrowLeft, Filter, Loader2, MessageCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { logError } from "@/utils/logger";
 
 interface SearchResult {
   medicament_nom: string;
@@ -112,7 +113,7 @@ const Results = () => {
       if (error) throw error;
       setResults(data || []);
     } catch (error) {
-      console.error('Erreur lors de la recherche:', error);
+      logError('Erreur lors de la recherche:', error);
       toast({
         title: "Erreur",
         description: "Impossible de récupérer les résultats",
@@ -136,7 +137,7 @@ const Results = () => {
       if (error) throw error;
       setNearbyPharmacies(data || []);
     } catch (error) {
-      console.error('Erreur lors de la recherche des pharmacies proches:', error);
+      logError('Erreur lors de la recherche des pharmacies proches:', error);
       toast({
         title: "Erreur",
         description: "Impossible de récupérer les pharmacies proches",

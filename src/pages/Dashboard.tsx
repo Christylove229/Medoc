@@ -11,6 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { User, Session } from "@supabase/supabase-js";
 import { LogOut, Pill, Plus, Edit2, Save, X } from "lucide-react";
+import { logError } from "@/utils/logger";
 
 interface Pharmacy {
   id: string;
@@ -135,7 +136,7 @@ const Dashboard = () => {
         setStocks(stocksData || []);
       }
     } catch (error) {
-      console.error('Error loading pharmacy data:', error);
+      logError('Error loading pharmacy data:', error);
       toast({
         title: "Erreur",
         description: "Impossible de charger les données",
@@ -156,7 +157,7 @@ const Dashboard = () => {
       if (error) throw error;
       setMedicaments(data || []);
     } catch (error) {
-      console.error('Error loading medicaments:', error);
+      logError('Error loading medicaments:', error);
     }
   };
 
